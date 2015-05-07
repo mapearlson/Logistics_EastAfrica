@@ -92,10 +92,17 @@ y2014.2m <- melt(y2014.2m, id.vars='region')
 ggplot(y2014.2m, aes(variable, value)) + geom_bar(aes(fill = region), position = "dodge", stat="identity")
 
 ##GDP
-names(gdp) <- c("country", "code", "year", "gdp(%)")
+gdp <- read.csv("gdp.csv")
+names(gdp) <- c("country", "code", "year", "gdp")
 y2012.2 <- merge(y2012, gdp, by="country")
+y2012.2$lngdp <- log(y2012.2$gdp)
+qplot(lngdp, overall_score, data = y2012.2, geom = c("point", "smooth"))
 
+#y2012.2 <- subset(y2012.2, select = c(region, overall_score, customs_score, infra_score, shipments_score,
+#log_quality_score, tracking_score, timeliness_score))
+#Graph using ggplot instead of qplot for spline
 
-y2012.2 <- subset(y2012.2, select = c(region, overall_score, customs_score, infra_score, shipments_score,
-                                       log_quality_score, tracking_score, timeliness_score))
-  
+ggplot(y2012.2, aes(x=lngdp, y=overall_score)) +
+  geom_point(shape=1) +    # Use hollow circles
+  geom_smooth()            # Add a loess smoothed fit curve with confidence region
+
