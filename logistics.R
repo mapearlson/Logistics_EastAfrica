@@ -33,14 +33,49 @@ e2014.m <- subset(e2014, select = c(country, overall_score, customs_score, infra
 e2014.m <- melt(e2014.m, id.vars='country')
 ggplot(e2014.m, aes(variable, value)) + geom_bar(aes(fill = country), position = "dodge", stat="identity")
 
-#Comparison to other regions
+#Comparison to other global regions
+y2014.2 <- y2014
+y2014.2$region <- NA
 
+#Subset East Africa
+y2014.2$region[y2014$country=="Germany" | y2014$country=="Belgium" | 
+               y2014$country=="Bulgaria" | y2014$country=="Croatia" | 
+                y2014$country=="Cyprus" | y2014$country=="Cyprus" | 
+                y2014$country=="Czech Republic" | y2014$country=="Denmark"|
+                 y2014$country=="Estonia" | y2014$country=="Finland" |
+               y2014$country=="France" |  y2014$country=="Austria" |
+                 y2014$country=="Greece" | y2014$country=="Hungary" |
+                 y2014$country=="Ireland" | y2014$country=="Italy" |
+                 y2014$country=="Latvia" | y2014$country=="Lithuania" |
+               y2014$country=="Luxembourg" | y2014$country=="Malta" |
+               y2014$country=="Netherlands" | y2014$country=="Poland" |
+                 y2014$country=="Romania" | y2014$country=="Slovakia" |
+                 y2014$country=="Slovenia" | y2014$country=="Spain" |
+                 y2014$country=="Sweden" | y2014$country=="United Kingdom"] <- "EU"
 
+#Subset East Africa
+y2014.2$region[y2014$country=="Burundi" | y2014$country=="Dijibouti"] <- "EA"
+y2014.2$region[y2014$country=="Eritrea" | y2014$country=="Ethiopia"] <- "EA"
+y2014.2$region[y2014$country=="Kenya" | y2014$country=="Madagascar"] <- "EA"
+y2014.2$region[y2014$country=="Malawi" | y2014$country=="Mozambique"] <- "EA"
+y2014.2$region[y2014$country=="Rwanda" | y2014$coutnry=="Somalia"] <- "EA"
+y2014.2$region[y2014$country=="Tanzania" | y2014$country=="Zambia"] <- "EA"
+y2014.2$region[y2014$country=="Zimbabwe"] <- "EA"
 
-means <- function(year,) {
-  x<-as.array(year)
-  apply(x,2,mean)
-}
-  
-  
+#Subset Latin America
+y2014.2$region[y2014$country=="Argentina" | y2014$country=="Belize"] <- "LA" 
+y2014.2$region[y2014$country=="Bolivia" | y2014$country=="Brazil"] <- "LA" 
+y2014.2$region[y2014$country=="Chile" | y2014$country=="Colombia"] <- "LA"
+y2014.2$region[y2014$country=="Costa Rica" | y2014$country=="Ecuador"] <- "LA"
+y2014.2$region[y2014$country=="El Salvador" | y2014$coutnry=="Guatemala"] <- "LA"
+y2014.2$region[y2014$country=="Honduras" | y2014$country=="Mexico"] <- "LA"
+y2014.2$region[y2014$country=="Nicaragua" | y2014$country=="Panama"] <- "LA"
+y2014.2$region[y2014$country=="Paraguay" | y2014$country=="Peru"] <- "LA"
+y2014.2$region[y2014$country=="Uruguay" | y2014$country=="Venezuela"] <- "LA"
+
+y2014.2m <- subset(y2014.2, select = c(region, overall_score, customs_score, infra_score, shipments_score,
+                                    log_quality_score, tracking_score, timeliness_score))
+y2014.2m <- melt(y2014.2m, id.vars='region')
+ggplot(y2014.2m, aes(variable, value)) + geom_bar(aes(fill = region), position = "dodge", stat="identity")
+
   
