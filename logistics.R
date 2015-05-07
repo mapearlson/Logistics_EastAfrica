@@ -1,5 +1,6 @@
 setwd("~/Documents/Delma")
 install.packages("ggplot2")
+library(stats)
 library(ggplot2)
 library(reshape2)
 d <- read.csv("eastafrica_logistics.csv")
@@ -73,9 +74,28 @@ y2014.2$region[y2014$country=="Nicaragua" | y2014$country=="Panama"] <- "LA"
 y2014.2$region[y2014$country=="Paraguay" | y2014$country=="Peru"] <- "LA"
 y2014.2$region[y2014$country=="Uruguay" | y2014$country=="Venezuela"] <- "LA"
 
-y2014.2m <- subset(y2014.2, select = c(region, overall_score, customs_score, infra_score, shipments_score,
+#Subset Subsaharan-Africa
+y2014.2$region[y2014$country=="Angola" | y2014$country=="Benin" | y2014$country=="Botswana"] <- "SA" 
+y2014.2$region[y2014$country=="Burkina Faso" | y2014$country=="Cameroon" | y2014$country=="Central African Republic" ] <- "SA"
+y2014.2$region[y2014$country=="Chad" | y2014$country=="Congo" | y2014$country=="Côte d'Ivoire"] <- "SA"
+y2014.2$region[y2014$country=="Dem. Rep. of the Congo" | y2014$country=="Equatorial Guinea"] <- "SA"
+y2014.2$region[y2014$country=="Gabon" | y2014$country=="Ghana" | y2014$country=="Guinea-Bissau"] <- "SA"
+y2014.2$region[y2014$country=="Lesotho" | y2014$country=="Liberia" | y2014$country=="Malawi"] <- "SA"
+y2014.2$region[y2014$country=="Nambia" | y2014$country=="Nigeria"] <- "SA"
+y2014.2$region[y2014$country=="Senegal" | y2014$country=="Sierra Leone"| y2014$country=="South Africa"] <- "SA"
+y2014.2$region[y2014$country=="South Sudan" | y2014$country=="Swaziland" | y2014$country=="Togo" | y2014$country=="Uganda"] <- "SA"
+
+y2014.2m <- na.omit(y2014.2)
+y2014.2m <- subset(y2014.2m, select = c(region, overall_score, customs_score, infra_score, shipments_score,
                                     log_quality_score, tracking_score, timeliness_score))
 y2014.2m <- melt(y2014.2m, id.vars='region')
 ggplot(y2014.2m, aes(variable, value)) + geom_bar(aes(fill = region), position = "dodge", stat="identity")
 
+##GDP
+names(gdp) <- c("country", "code", "year", "gdp(%)")
+y2012.2 <- merge(y2012, gdp, by="country")
+
+
+y2012.2 <- subset(y2012.2, select = c(region, overall_score, customs_score, infra_score, shipments_score,
+                                       log_quality_score, tracking_score, timeliness_score))
   
