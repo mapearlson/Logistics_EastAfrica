@@ -101,8 +101,8 @@ qplot(lngdp, overall_score, data = y2012.2, geom = c("point", "smooth"))
 #y2012.2 <- subset(y2012.2, select = c(region, overall_score, customs_score, infra_score, shipments_score,
 #log_quality_score, tracking_score, timeliness_score))
 #Graph using ggplot instead of qplot for spline
-
 ggplot(y2012.2, aes(x=lngdp, y=overall_score)) +
   geom_point(shape=1) +    # Use hollow circles
   geom_smooth()            # Add a loess smoothed fit curve with confidence region
 
+#3d plot with FDI
