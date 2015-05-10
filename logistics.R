@@ -120,9 +120,6 @@ library(scatterplot3d)
 s3d <-scatterplot3d(y2012.3$fdi, y2012.3$lngdp, y2012.3$overall_score, pch=16, highlight.3d=TRUE,
                     type="h", main="3D Scatterplot")
 
-fit <- lm(mpg ~ wt+disp) 
-s3d$plane3d(fit)
-
 #Linear Model (y2012.3$overall_score~y2012.3$fdi + y2012.3$lngdp)
 lm.fit <- lm(overall_score~ fdi + lngdp, data=y2012.3)
 summary(lm.fit)
@@ -130,7 +127,84 @@ summary(lm.fit)
 #Seems to be one possibly problematic outlier when including lnGDP, overall_score, and fdi
 qqPlot(lm.fit, main="QQ Plot") #qq plot for studentized resid 
 leveragePlots(lm.fit) # leverage plots
+qqnorm(lm.fit$res)
+qqline(lm.fit$res)
+hist(lm.fit$res)
+
+plot(, lm.fit$res)
+plot(Lot, results$res)
+plot(lm.fit$fitted, lm.fit$res)
+points(lm.fit$fitted[22], lm.fit$res[22], col='red')
 
 cook <- cooks.distance(lm.fit)
 plot(cook,ylab="Cooks distances")
-points(22,cook[22],col='red')
+points(22,cook[22],col="red")
+
+#Burundi is the outlier, analysis again exluding Burundi
+y2012.4 <- y2012.3[-22,]
+lm.fit2 <- lm(overall_score ~ fdi + lngdp, data=y2012.4)
+summary(lm.fit2)
+
+#Go back in to isolated 2012 East Africa
+#Comparison to other global regions
+y2012.5 <- y2012.4
+y2012.5$region <- NA
+
+#Subset EU
+y2012.5$region[y2012.4$country=="Germany" | y2012.4$country=="Belgium" | 
+                 y2012.4$country=="Bulgaria" | y2012.4$country=="Croatia" | 
+                 y2012.4$country=="Cyprus" | y2012.4$country=="Cyprus" | 
+                 y2012.4$country=="Czech Republic" | y2012.4$country=="Denmark"|
+                 y2012.4$country=="Estonia" | y2012.4$country=="Finland" |
+                 y2012.4$country=="France" |  y2012.4$country=="Austria" |
+                 y2012.4$country=="Greece" | y2012.4$country=="Hungary" |
+                 y2012.4$country=="Ireland" | y2012.4$country=="Italy" |
+                 y2012.4$country=="Latvia" | y2012.4$country=="Lithuania" |
+                 y2012.4$country=="Luxembourg" | y2012.4$country=="Malta" |
+                 y2012.4$country=="Netherlands" | y2012.4$country=="Poland" |
+                 y2012.4$country=="Romania" | y2012.4$country=="Slovakia" |
+                 y2012.4$country=="Slovenia" | y2012.4$country=="Spain" |
+                 y2012.4$country=="Sweden" | y2012.4$country=="United Kingdom"] <- "EU"
+
+#Subset East Africa
+y2012.5$region[y2012.4$country=="Burundi" | y2012.4$country=="Dijibouti"] <- "EA"
+y2012.5$region[y2012.4$country=="Eritrea" | y2012.4$country=="Ethiopia"] <- "EA"
+y2012.5$region[y2012.4$country=="Kenya" | y2012.4$country=="Madagascar"] <- "EA"
+y2012.5$region[y2012.4$country=="Malawi" | y2012.4$country=="Mozambique"] <- "EA"
+y2012.5$region[y2012.4$country=="Rwanda" | y2012.4$coutnry=="Somalia"] <- "EA"
+y2012.5$region[y2012.4$country=="Tanzania" | y2012.4$country=="Zambia"] <- "EA"
+y2012.5$region[y2012.4$country=="Zimbabwe"] <- "EA"
+
+#Subset Latin America
+y2012.5$region[y2012.4$country=="Argentina" | y2012.4$country=="Belize"] <- "LA" 
+y2012.5$region[y2012.4$country=="Bolivia" | y2012.4$country=="Brazil"] <- "LA" 
+y2012.5$region[y2012.4$country=="Chile" | y2012.4$country=="Colombia"] <- "LA"
+y2012.5$region[y2012.4$country=="Costa Rica" | y2012.4$country=="Ecuador"] <- "LA"
+y2012.5$region[y2012.4$country=="El Salvador" | y2012.4$coutnry=="Guatemala"] <- "LA"
+y2012.5$region[y2012.4$country=="Honduras" | y2012.4$country=="Mexico"] <- "LA"
+y2012.5$region[y2012.4$country=="Nicaragua" | y2012.4$country=="Panama"] <- "LA"
+y2012.5$region[y2012.4$country=="Paraguay" | y2012.4$country=="Peru"] <- "LA"
+y2012.5$region[y2012.4$country=="Uruguay" | y2012.4$country=="Venezuela"] <- "LA"
+
+#Subset Subsaharan-Africa
+y2012.5$region[y2012.4$country=="Angola" | y2012.4$country=="Benin" | y2012.4$country=="Botswana"] <- "SA" 
+y2012.5$region[y2012.4$country=="Burkina Faso" | y2012.4$country=="Cameroon" | y2012.4$country=="Central African Republic" ] <- "SA"
+y2012.5$region[y2012.4$country=="Chad" | y2012.4$country=="Congo" | y2012.4$country=="Côte d'Ivoire"] <- "SA"
+y2012.5$region[y2012.4$country=="Dem. Rep. of the Congo" | y2012.4$country=="Equatorial Guinea"] <- "SA"
+y2012.5$region[y2012.4$country=="Gabon" | y2012.4$country=="Ghana" | y2012.4$country=="Guinea-Bissau"] <- "SA"
+y2012.5$region[y2012.4$country=="Lesotho" | y2012.4$country=="Liberia" | y2012.4$country=="Malawi"] <- "SA"
+y2012.5$region[y2012.4$country=="Nambia" | y2012.4$country=="Nigeria"] <- "SA"
+y2012.5$region[y2012.4$country=="Senegal" | y2012.4$country=="Sierra Leone"| y2012.4$country=="South Africa"] <- "SA"
+y2012.5$region[y2012.4$country=="South Sudan" | y2012.4$country=="Swaziland" | y2012.4$country=="Togo" | y2012.4$country=="Uganda"] <- "SA"
+
+y2012.5m <- na.omit(y2012.5)
+y2012.5m <- subset(y2012.5m, select = c(region, overall_score, customs_score, infra_score, shipments_score,
+                                        log_quality_score, tracking_score, timeliness_score))
+y2012.5m <- melt(y2012.5m, id.vars='region')
+ggplot(y2014.2m, aes(variable, value)) + geom_bar(aes(fill = region), position = "dodge", stat="identity")
+
+#Subset EA for correlation
+y2012.5.EA <- subset(y2012.5, region=="EA")
+cor(y2012.5.EA$lngdp, y2012.5.EA$overall_score)
+cor(y2012.5.EA)
+cor(y2012.5.EA$lngdp, y2012.5.EA$overall_score, use="complete.obs")
