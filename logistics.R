@@ -106,3 +106,31 @@ ggplot(y2012.2, aes(x=lngdp, y=overall_score)) +
   geom_smooth()            # Add a loess smoothed fit curve with confidence region
 
 #3d plot with FDI
+fdi <- read.csv("fdi.csv")
+names(fdi) <- c("country", "year", "fdi")
+y2012.3 <- merge(y2012.2, fdi, by="country")
+
+install.packages("Rcmdr")
+library(Rcmdr)
+library(rgl)
+scatter3d(y2012.3$overall_score, y2012.3$lngdp, y2012.3$fdi)
+
+install.packages("scatterplot3d")
+library(scatterplot3d) 
+s3d <-scatterplot3d(y2012.3$fdi, y2012.3$lngdp, y2012.3$overall_score, pch=16, highlight.3d=TRUE,
+                    type="h", main="3D Scatterplot")
+
+fit <- lm(mpg ~ wt+disp) 
+s3d$plane3d(fit)
+
+#Linear Model (y2012.3$overall_score~y2012.3$fdi + y2012.3$lngdp)
+lm.fit <- lm(overall_score~ fdi + lngdp, data=y2012.3)
+summary(lm.fit)
+
+#Seems to be one possibly problematic outlier when including lnGDP, overall_score, and fdi
+qqPlot(lm.fit, main="QQ Plot") #qq plot for studentized resid 
+leveragePlots(lm.fit) # leverage plots
+
+cook <- cooks.distance(lm.fit)
+plot(cook,ylab="Cooks distances")
+points(22,cook[22],col='red')
