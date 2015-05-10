@@ -32,7 +32,8 @@ ggplot(data=e2014, aes(x=country, y=overall_score, fill=infra_score)) +
 e2014.m <- subset(e2014, select = c(country, overall_score, customs_score, infra_score, shipments_score,
                                     log_quality_score, tracking_score, timeliness_score))
 e2014.m <- melt(e2014.m, id.vars='country')
-ggplot(e2014.m, aes(variable, value)) + geom_bar(aes(fill = country), position = "dodge", stat="identity")
+mypalette <- brewer.pal(13,"Reds")
+ggplot(e2014.m, aes(variable, value)) + geom_bar(aes(fill = country), position = "dodge", stat="identity") + 
 
 #Comparison to other global regions
 y2014.2 <- y2014
