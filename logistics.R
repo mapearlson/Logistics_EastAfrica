@@ -29,11 +29,14 @@ ggplot(data=e2014, aes(x=country, y=overall_score, fill=infra_score)) +
   geom_bar(stat="identity", position=position_dodge(), colour="black")
 
 #Subset and reshape to make clustered bar graph of each component
+e2014.m <- e2014
 e2014.m <- subset(e2014, select = c(country, overall_score, customs_score, infra_score, shipments_score,
                                     log_quality_score, tracking_score, timeliness_score))
+names(e2014.m) <- c("country", "Overall", "Customs", "Infrastructure", "Shipments", "Quality", "Tracking", "Timeliness")
 e2014.m <- melt(e2014.m, id.vars='country')
-mypalette <- brewer.pal(13,"Reds")
-ggplot(e2014.m, aes(variable, value)) + geom_bar(aes(fill = country), position = "dodge", stat="identity") + 
+cbbPalette <- c("#000000", "#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#333BFF", "#CC6600", "#9633FF", "#E2FF33")
+ggplot(e2014.m, aes(variable, value)) + geom_bar(aes(fill = country), position = "dodge", stat="identity") + scale_fill_manual(values=cbbPalette) +
+  ggtitle("East African LPI Scores") + xlab("Components") + ylab("Scores")
 
 #Comparison to other global regions
 y2014.2 <- y2014
