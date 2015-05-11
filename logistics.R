@@ -174,7 +174,7 @@ summary(lm.fit3)
 
 #Biased upward, but the beta of 2.7024 when exponentiated 
 #can be interpreted as a 15% increase in GDP($).  
-plot(y2012.4$overall_score, y2012.4$lngdp, xlab="Overall Score", ylab="Ln(GDP")  
+plot(y2012.4$overall_score, y2012.4$lngdp, xlab="Overall Score", ylab="Ln(GDP)", main="Figure 3: OLS for All Countries")  
 abline(lm(y2012.4$lngdp ~ y2012.4$overall_score), col='red')
 
 scatterplot3d(y2012.4$fdi, y2012.4$lngdp, y2012.4$overall_score, pch=16, highlight.3d=TRUE,
