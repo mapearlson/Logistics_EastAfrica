@@ -95,7 +95,7 @@ y2014.2m <- subset(y2014.2m, select = c(region, overall_score, customs_score, in
 y2014.2m <- melt(y2014.2m, id.vars='region')
 ggplot(y2014.2m, aes(variable, value)) + geom_bar(aes(fill = region), position = "dodge", stat="identity")
 
-##GDP
+##Exports of goods and services as a percentage of gdp
 gdp <- read.csv("gdp.csv")
 names(gdp) <- c("country", "code", "year", "gdp")
 y2012.2 <- merge(y2012, gdp, by="country")
@@ -146,8 +146,68 @@ points(22,cook[22],col="red")
 
 #Burundi is the outlier, analysis again exluding Burundi
 y2012.4 <- y2012.3[-22,]
-lm.fit2 <- lm(overall_score ~ fdi + lngdp, data=y2012.4)
+lm.fit2 <- lm(lngdp ~ fdi + overall_score, data=y2012.4)
 summary(lm.fit2)
+
+#Many of the countries receive 0 in FDI which is problematic; exlcuding F~DI
+lm.fit3 <- lm(lngdp ~ overall_score, data=y2012.4)
+summary(lm.fit3)
+
+#Call:
+#  lm(formula = lngdp ~ overall_score, data = y2012.4)
+
+#Residuals:
+#  Min      1Q  Median      3Q     Max 
+#-3.3589 -0.9628 -0.0418  0.9907  4.3467 
+
+#Coefficients:
+ # Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)    17.0139     0.6626   25.68   <2e-16 ***
+#  overall_score   2.7024     0.2256   11.98   <2e-16 ***
+#  ---
+#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#Residual standard error: 1.515 on 146 degrees of freedom
+#(3 observations deleted due to missingness)
+#Multiple R-squared:  0.4956,  Adjusted R-squared:  0.4922 
+#F-statistic: 143.5 on 1 and 146 DF,  p-value: < 2.2e-16
+
+#Biased upward, but the beta of 2.7024 when exponentiated 
+#can be interpreted as a 15% increase in GDP($).  
+plot(y2012.4$overall_score, y2012.4$lngdp, xlab="Overall Score", ylab="Ln(GDP")  
+abline(lm(y2012.4$lngdp ~ y2012.4$overall_score), col='red')
+
+scatterplot3d(y2012.4$fdi, y2012.4$lngdp, y2012.4$overall_score, pch=16, highlight.3d=TRUE,
+                    type="h", main="3D Scatterplot")
+
+cook2 <- cooks.distance(lm.fit3)
+plot(cook2,ylab="Cooks distances")
+
+#Log-log Model
+y2012.4$lnscore <- log(y2012.4$overall_score)
+lm.log.log <- lm(lngdp ~ lnscore, data=y2012.4)
+summary(lm.log.log)
+
+#Call:
+#  lm(formula = lngdp ~ lnscore, data = y2012.4)
+
+#Residuals:
+#  Min      1Q  Median      3Q     Max 
+#-3.4431 -1.0507 -0.0914  0.9929  4.2699 
+
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)  16.5302     0.7090   23.32   <2e-16 ***
+#  lnscore       7.9477     0.6699   11.86   <2e-16 ***
+#  ---
+#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#Residual standard error: 1.523 on 146 degrees of freedom
+#(3 observations deleted due to missingness)
+#Multiple R-squared:  0.4909,  Adjusted R-squared:  0.4874 
+#F-statistic: 140.8 on 1 and 146 DF,  p-value: < 2.2e-16
+
+#We expect a change in overall score of 1% to change the GDP by 8 percent
 
 #Go back in to isolated 2012 East Africa
 #Comparison to other global regions
@@ -207,8 +267,21 @@ y2012.5m <- subset(y2012.5m, select = c(region, overall_score, customs_score, in
 y2012.5m <- melt(y2012.5m, id.vars='region')
 ggplot(y2014.2m, aes(variable, value)) + geom_bar(aes(fill = region), position = "dodge", stat="identity")
 
-#Subset EA for correlation
+#Subset EA for correlation and LM
 y2012.5.EA <- subset(y2012.5, region=="EA")
 cor(y2012.5.EA$lngdp, y2012.5.EA$overall_score)
 cor(y2012.5.EA)
 cor(y2012.5.EA$lngdp, y2012.5.EA$overall_score, use="complete.obs")
+
+lm.fit.EA <- lm(lngdp ~ overall_score, data=y2012.5.EA)
+summary(lm.fit.EA)
+
+#Subset EA and SAfor correlation and LM
+y2012.5.Af <- subset(y2012.5, region==c("EA", "SA"))
+lm.fit.Af <- lm(lngdp ~ overall_score, data=y2012.5.Af)
+summary(lm.fit.Af)
+
+y2012.5$lnscore <- log(y2012.5$overall_score)
+y2012.5.Af$lnscore <- log(y2012.5.Af$overall_score)
+lm.fit.Aflog <- lm(lngdp ~ lnscore, data=y2012.5.Af)
+summary(lm.fit.Aflog)
