@@ -348,5 +348,15 @@ plot(cook5)
 lm.GDP.3 <- lm(lngdp.growth ~ lncost.export, data=d2013.3)
 summary(lm.GDP.3)
 
-###Decided to recode GDP growth 
+#Decided to recode GDP growth (NaN -> 0)
+subset(d2013.2, lngdp.growth=="NaN")
+d2013.3 <- d2013.2
 
+is.nan.data.frame <- function(x)
+  do.call(cbind, lapply(x, is.nan))
+
+d2013.3[is.nan(d2013.3)] <- 0
+
+lm.GDP.4 <- lm(lngdp.growth ~ lncost.export, data=d2013.3)
+summary(lm.GDP.4)
+qplot(lncost.export, lngdp.growth, data = d2013.3, geom = c("point", "smooth"))
