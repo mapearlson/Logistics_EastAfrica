@@ -285,3 +285,17 @@ y2012.5$lnscore <- log(y2012.5$overall_score)
 y2012.5.Af$lnscore <- log(y2012.5.Af$overall_score)
 lm.fit.Aflog <- lm(lngdp ~ lnscore, data=y2012.5.Af)
 summary(lm.fit.Aflog)
+
+#New correlation with costs and GDP instead of logistics score for 2013
+gdp.growth <- read.csv("gdp.growth2013.csv")
+cost.import <- read.csv("cost.export2013.csv")
+cost.export <- read.csv("cost.import.csv")
+gdp.current <- read.csv("gpd.current2013.csv")
+d2013 <- merge(gdp.growth, cost.import, by="country")
+d2013 <- merge(d2013, cost.export, by="country")
+d2013 <- merge(d2013, gdp.current, by="country")
+d2013.2 <- subset(d2013, select = c(country, code.x, year.x, GDP.growth, gdp.current, cost.import, cost.export))
+
+d2013.2$lngdp <- log(d2013.2$gdp.current)
+qplot(lngdp, data = y2012.2, geom = c("point", "smooth"))
+
