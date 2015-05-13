@@ -297,5 +297,56 @@ d2013 <- merge(d2013, gdp.current, by="country")
 d2013.2 <- subset(d2013, select = c(country, code.x, year.x, GDP.growth, gdp.current, cost.import, cost.export))
 
 d2013.2$lngdp <- log(d2013.2$gdp.current)
-qplot(lngdp, data = y2012.2, geom = c("point", "smooth"))
+qplot(cost.import, lngdp, data = d2013.2, geom = c("point", "smooth"))
+plot(d2013.2$lngdp, d2013.2$cost.import)
+cor(d2013.2$lngdp, d2013.2$cost.import, use="complete.obs")
+
+hist(d2013.2$cost.import)
+hist(d2013.2$cost.export)
+d2013.2$lncost.import <- log(d2013.2$cost.import)
+d2013.2$lncost.export <- log(d2013.2$cost.export)
+plot(d2013.2$lngdp, d2013.2$lncost.import)
+qplot(lncost.import, lngdp, data = d2013.2, geom = c("point", "smooth"))
+qplot(lncost.export, lngdp, data = d2013.2, geom = c("point", "smooth"))
+
+d2013.2$lngdp.growth <- log(d2013.2$GDP.growth)
+#Warning message:
+#In log(d2013.2$GDP.growth) : NaNs produced
+qplot(lncost.import, GDP.growth, data = d2013.2, geom = c("point", "smooth"))
+qplot(lncost.export, GDP.growth, data = d2013.2, geom = c("point", "smooth"))
+qplot(lncost.export, lngdp.growth, data = d2013.2, geom = c("point", "smooth"))
+
+#Model with costs with no log
+lm.cost.export <- lm(lngdp ~ lncost.export, data=d2013.2)
+summary(lm.cost.export)
+
+#plot(y2012.4$overall_score, y2012.4$lngdp, xlab="Overall Score", ylab="Ln(GDP)", main="Figure 3: OLS for All Countries")  
+#abline(lm(y2012.4$lngdp ~ y2012.4$overall_score), col='red')
+
+cook3 <- cooks.distance(lm.cost.export)
+plot(cook3,ylab="Cooks distances")
+
+#Model with costs with log
+
+lm.cost.export <- lm(lngdp ~ lncost.export, data=d2013.2)
+summary(lm.cost.export)
+
+#MOdel with GDP.growth
+lm.GDP <- lm(GDP.growth ~ lncost.export, data=d2013.2)
+cook4 <- cooks.distance(lm.GDP)
+plot(cook4)
+cook4[which(cook4>1)]
+#39 
+#1.856865
+d2013.3 <- d2013.2[-39,]
+lm.GDP.2 <- lm(GDP.growth ~ lncost.export, data=d2013.3)
+summary(lm.GDP.2)
+qplot(lncost.export, GDP.growth, data = d2013.3, geom = c("point", "smooth"))
+cook5 <- cooks.distance(lm.GDP.2)
+plot(cook5)
+
+lm.GDP.3 <- lm(lngdp.growth ~ lncost.export, data=d2013.3)
+summary(lm.GDP.3)
+
+###Decided to recode GDP growth 
 
