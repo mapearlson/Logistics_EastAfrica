@@ -174,8 +174,15 @@ summary(lm.fit3)
 
 #Biased upward, but the beta of 2.7024 when exponentiated 
 #can be interpreted as a 15% increase in GDP($).  
-plot(y2012.4$overall_score, y2012.4$lngdp, xlab="Overall Score", ylab="Ln(GDP)", main="Figure 3: OLS for All Countries")  
+mar.default <- c(5,4,4,2) + 0.1
+par(mar = mar.default + c(0, 4, 0, 0)) 
+plot(y2012.4$overall_score, y2012.4$lngdp, xlab="LPI Score", ylab="Log of GDP (CurrentUS$)", main="Logistics Performance")  
 abline(lm(y2012.4$lngdp ~ y2012.4$overall_score), col='red')
+text(y2012.4$overall_score, y2012.4$lngdp, y2012.4$country, cex=0.6, pos=4, col="red")
+#or
+identify(y2012.4$overall_score, y2012.4$lngdp, labels=y2012.4$country)
+coords <- locator(type="l")
+coords
 
 scatterplot3d(y2012.4$fdi, y2012.4$lngdp, y2012.4$overall_score, pch=16, highlight.3d=TRUE,
                     type="h", main="3D Scatterplot")
