@@ -282,6 +282,8 @@ cor(y2012.5.EA$lngdp, y2012.5.EA$overall_score, use="complete.obs")
 
 lm.fit.EA <- lm(lngdp ~ overall_score, data=y2012.5.EA)
 summary(lm.fit.EA)
+plot(y2012.5.EA$overall_score, y2012.5.EA$lngdp)  
+
 
 #Subset EA and SAfor correlation and LM
 y2012.5.Af <- subset(y2012.5, region==c("EA", "SA"))
@@ -327,6 +329,25 @@ qplot(lncost.export, lngdp.growth, data = d2013.2, geom = c("point", "smooth"))
 lm.cost.export <- lm(lngdp ~ lncost.export, data=d2013.2)
 summary(lm.cost.export)
 
+#Call:
+#  lm(formula = lngdp ~ lncost.export, data = d2013.2)
+
+#Residuals:
+#  Min      1Q  Median      3Q     Max 
+#-6.1285 -1.8949 -0.2903  1.9379  6.9599 
+
+#Coefficients:
+#  Estimate Std. Error t value Pr(>|t|)    
+#(Intercept)    25.9937     2.6198   9.922   <2e-16 ***
+#  lncost.export  -0.1359     0.3645  -0.373     0.71    
+#---
+#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+#Residual standard error: 2.868 on 213 degrees of freedom
+#(33 observations deleted due to missingness)
+#Multiple R-squared:  0.0006525,  Adjusted R-squared:  -0.004039 
+#F-statistic: 0.1391 on 1 and 213 DF,  p-value: 0.7096
+
 #plot(y2012.4$overall_score, y2012.4$lngdp, xlab="Overall Score", ylab="Ln(GDP)", main="Figure 3: OLS for All Countries")  
 #abline(lm(y2012.4$lngdp ~ y2012.4$overall_score), col='red')
 
@@ -367,3 +388,38 @@ d2013.3[is.nan(d2013.3)] <- 0
 lm.GDP.4 <- lm(lngdp.growth ~ lncost.export, data=d2013.3)
 summary(lm.GDP.4)
 qplot(lncost.export, lngdp.growth, data = d2013.3, geom = c("point", "smooth"))
+
+#
+d2013.Af <- d2013.3
+#Subset Subsaharan-Africa
+d2013.Af$region[d2013.3$country=="Angola" | d2013.3$country=="Benin" | d2013.3$country=="Botswana"] <- "SA" 
+d2013.Af$region[d2013.3$country=="Burkina Faso" | d2013.3$country=="Cameroon" | d2013.3$country=="Central African Republic" ] <- "SA"
+d2013.Af$region[d2013.3$country=="Chad" | d2013.3$country=="Congo" | d2013.3$country=="Côte d'Ivoire"] <- "SA"
+d2013.Af$region[d2013.3$country=="Dem. Rep. of the Congo" | d2013.3$country=="Equatorial Guinea"] <- "SA"
+d2013.Af$region[d2013.3$country=="Gabon" | d2013.3$country=="Ghana" | d2013.3$country=="Guinea-Bissau"] <- "SA"
+d2013.Af$region[d2013.3$country=="Lesotho" | d2013.3$country=="Liberia" | d2013.3$country=="Malawi"] <- "SA"
+d2013.Af$region[d2013.3$country=="Nambia" | d2013.3$country=="Nigeria"] <- "SA"
+d2013.Af$region[d2013.3$country=="Senegal" | d2013.3$country=="Sierra Leone"| d2013.3$country=="South Africa"] <- "SA"
+d2013.Af$region[d2013.3$country=="South Sudan" | d2013.3$country=="Swaziland" | d2013.3$country=="Togo" | d2013.3$country=="Uganda"] <- "SA"
+
+
+#Subset East Africa
+d2013.Af$region[d2013.3$country=="Burundi" | d2013.3$country=="Dijibouti"] <- "EA"
+d2013.Af$region[d2013.3$country=="Eritrea" | d2013.3$country=="Ethiopia"] <- "EA"
+d2013.Af$region[d2013.3$country=="Kenya" | d2013.3$country=="Madagascar"] <- "EA"
+d2013.Af$region[d2013.3$country=="Malawi" | d2013.3$country=="Mozambique"] <- "EA"
+d2013.Af$region[d2013.3$country=="Rwanda" | d2013.3$coutnry=="Somalia"] <- "EA"
+d2013.Af$region[d2013.3$country=="Tanzania" | d2013.3$country=="Zambia"] <- "EA"
+d2013.Af$region[d2013.3$country=="Zimbabwe"] <- "EA"
+
+
+d2013.Af <- subset(d2013.Af, region==c("EA", "SA"))
+lm.GDP.5 <- lm(lngdp.growth ~ lncost.export, data=d2013.Af)
+summary(lm.GDP.4)
+qplot(lncost.export, lngdp.growth, data = d2013.3, geom = c("point", "smooth"))
+
+lm.GDP.6 <- lm(lngdp ~ lncost.export, data=d2013.Af)
+summary(lm.GDP.5)
+qplot(lncost.export, lngdp, data = d2013.Af, geom = c("point", "smooth"))
+plot(d2013.Af$lncost.export, d2013.Af$lngdp)  
+abline(lm(d2013.Af$lngdp ~ d2013.Af$lncost.export), col='red')
